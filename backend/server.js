@@ -115,13 +115,30 @@ server.use("/api/listing", listingRoutes);
    FRONTEND (VITE / REACT)
 ===================== */
 
-const frontendPath = path.join(__dirname, "../frontend/dist");
+// const frontendPath = path.join(__dirname, "../frontend/dist");
+// server.use(express.static(frontendPath));
+
+// // ✅ CATCH-ALL (EXPRESS v5 SAFE)
+// server.use((req, res) => {
+//   res.sendFile(path.join(frontendPath, "index.html"));
+// });
+
+
+/* =====================
+   FRONTEND (VITE / REACT)
+===================== */
+
+// ✅ Qaabkan u beddel si uu u helo folder-ka saxda ah ee Render
+const frontendPath = path.join(__dirname, "frontend", "dist");
+
 server.use(express.static(frontendPath));
 
-// ✅ CATCH-ALL (EXPRESS v5 SAFE)
-server.use((req, res) => {
-  res.sendFile(path.join(frontendPath, "index.html"));
+// Hubi in tani ay tahay midka ugu dambeeya ee routes-ka
+server.get('*', (req, res) => {
+  res.sendFile(path.join(frontendPath, 'index.html'));
 });
+
+
 
 /* =====================
    ERROR HANDLER
