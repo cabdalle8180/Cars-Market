@@ -64,7 +64,7 @@ function HomePage() {
 
             {/* Subheading */}
             <p className="text-lg md:text-xl text-blue-100 max-w-3xl mx-auto leading-relaxed px-4">
-              Welcome to <span className="font-bold text-white">IftiinSheAuto</span> - where finding your ideal vehicle is simple,
+              Welcome to <span className="font-bold text-white">IftiinSheCar</span> - where finding your ideal vehicle is simple,
               transparent, and exciting. Browse our curated collection of quality cars.
             </p>
 

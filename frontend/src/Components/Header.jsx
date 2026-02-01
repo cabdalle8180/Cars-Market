@@ -38,7 +38,7 @@ function Header() {
         <Link to="/">
           <h1 className="text-sm sm:text-xl flex flex-wrap font-semibold text-slate-700">
             Iftiishe
-            <span className="text-slate-500 ml-1">Academy</span>
+            <span className="text-slate-500 ml-1">Cars</span>
           </h1>
         </Link>
 

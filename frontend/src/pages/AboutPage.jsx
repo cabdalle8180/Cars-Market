@@ -14,7 +14,7 @@ function About() {
         <div className="relative max-w-7xl mx-auto px-6 py-16 md:py-24">
           <div className="text-center space-y-6">
             <h1 className="text-5xl md:text-6xl font-extrabold text-white leading-tight">
-              About <span className="text-yellow-300">IftiinSheAuto</span>
+              About <span className="text-yellow-300">IftiinSheCars</span>
             </h1>
             <p className="text-xl text-blue-100 max-w-3xl mx-auto leading-relaxed">
               Your trusted partner in finding the perfect vehicle. We're committed to making car buying and renting simple, transparent, and enjoyable.
