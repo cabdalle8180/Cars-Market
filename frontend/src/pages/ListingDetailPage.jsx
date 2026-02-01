@@ -4,13 +4,9 @@ import { FaMapMarkedAlt, FaMapMarkerAlt, FaShare, FaCar, FaCalendarAlt, FaTachom
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Navigation } from "swiper/modules";
 import "swiper/css/bundle"
-// import "swiper/css";
-// import "swiper/css/navigation";
-
 import { useAppContext } from "../Context/AppContex";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import { Swiper, SwiperSlide } from "swiper/react";
 import Contact from "../Components/Contact";
 
@@ -23,13 +19,13 @@ function ListingDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [copied, setcopied] = useState(null);
-  const [contct, setcontact]= useState (false)
+  const [contct, setcontact] = useState(false)
 
-     useEffect(() => {
+  useEffect(() => {
     if (copied) {
       toast.success("Copied successfully!");
-      const timer = setTimeout(() => setcopied(false), 2000); // reset after 2s
-      return () => clearTimeout(timer); // cleanup
+      const timer = setTimeout(() => setcopied(false), 2000);
+      return () => clearTimeout(timer);
     }
   }, [copied]);
 
@@ -50,7 +46,6 @@ function ListingDetailPage() {
         const data = await res.json();
 
         if (!res.ok) {
-          // toast.error(data.message || "Failed to fetch listing");
           setError(data.message || "Failed to fetch listing");
           setLoading(false);
           return;
@@ -59,7 +54,6 @@ function ListingDetailPage() {
         setListing(data);
         setLoading(false);
       } catch (error) {
-        // toast.error("Failed to fetch listing");
         setError("Failed to fetch listing");
         setLoading(false);
       }
@@ -68,13 +62,10 @@ function ListingDetailPage() {
     fetchListing();
   }, [id, navigate]);
 
-  console.log(listing);
-  
-
   if (loading) {
     return (
       <div className="h-screen flex items-center justify-center">
-        <div className="animate-spin h-12 w-12 border-b-2 border-gray-900 rounded-full">Loading...</div>
+        <div className="animate-spin h-12 w-12 border-b-2 border-slate-700 rounded-full"></div>
       </div>
     );
   }
@@ -90,143 +81,144 @@ function ListingDetailPage() {
     );
   }
 
-  // const isOwner =
-  //   currentUser &&
-  //   listing.salesREF &&
-  //   currentUser._id === listing.salesREF.toString();
-
-
- console.log("listinPrice:",listing.price,"listingDiscount:", listing.discount);
-
-
   return (
-   <main>
-    {
-      listing && !loading && !error && <div>
-        <Swiper modules={[Navigation]} navigation>
-          {
-            listing.image.map((url)=>(
-              <SwiperSlide key={url}>
-                <div className="h-[75vh]" style={{background: `url(${url}) center no-repeat`, backgroundSize:"cover"}}></div>
-              </SwiperSlide>
-            ))
-          }
-        </Swiper>
-        <div className="fixed top-[13%] z-10 right-[3%] rounded-full border flex justify-center items-center w-12 h-12 bg-slate-100 cursor-pointer ">
-          {/* <  FaShare onClick={()=> {navigator.clipboard.writeText(window.location.href); setcopied(true); setTimeout(()=>{setcopied(false)}),2000}}  className="text-slate-500"/>
-          {copied && toast.success("copied successfull")} */}
+    <main>
+      {listing && !loading && !error && (
+        <div>
+          <div className="relative">
+            <Swiper modules={[Navigation]} navigation className="z-0">
+              {listing.image.map((url) => (
+                <SwiperSlide key={url}>
+                  <div
+                    className="h-[40vh] md:h-[65vh] w-full bg-slate-200"
+                    style={{
+                      background: `url(${url}) center no-repeat`,
+                      backgroundSize: "cover"
+                    }}
+                  ></div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+
+            {/* Share Button (Absolute within relative container) */}
+            <div className="absolute top-4 right-4 z-10 rounded-full border bg-white/80 w-10 h-10 md:w-12 md:h-12 flex justify-center items-center cursor-pointer hover:bg-white transition shadow-md">
               <FaShare
-        onClick={() => {
-          navigator.clipboard.writeText(window.location.href);
-          setcopied(true);
-        }}
-        className="text-slate-500 text-xl"
-      />
-        </div>
+                onClick={() => {
+                  navigator.clipboard.writeText(window.location.href);
+                  setcopied(true);
+                }}
+                className="text-slate-500 text-lg md:text-xl"
+              />
+            </div>
+          </div>
 
-        <div className="flex flex-col p-3 max-w-4xl mx-auto my-7 gap-4">
-          
-          <p className="text-2xl font-semibold">
-            {/* {listing.name} ${" "}{listing.price ? Number(listing.price).toLocaleString("en-US") : "0"} */}
+          <div className="flex flex-col p-4 max-w-5xl mx-auto my-7 gap-6">
+            <div className="flex flex-col gap-2">
+              <p className="text-2xl md:text-4xl font-bold capitalize text-slate-800">
+                {listing.name}
+              </p>
+              <p className="text-xl md:text-2xl font-semibold text-slate-600">
+                ${listing.price
+                  ? Number(listing.offer && listing.discount
+                    ? listing.price - listing.discount
+                    : listing.price
+                  ).toLocaleString("en-US")
+                  : "0"
+                }
+                <span className="text-sm font-normal text-slate-500">{listing.type === "rent" ? " /month" : ""}</span>
+              </p>
+            </div>
 
-             {listing.name} ${" "}
-  {listing.price 
-    ? Number(listing.offer && listing.discount 
-        ? listing.price - listing.discount 
-        : listing.price
-      ).toLocaleString("en-US")
-    : "0"
-  }
-
-            {listing.type === "rent" && " /month"}
-          </p>
-         <p className=" flex items-center gap-2 text-sm text-slate-700 mt-6">
-          <FaMapMarkerAlt className="text-green-700 "/>
-           {
-            listing.location 
-          }
-         </p>
-         <div className="flex gap-4">
-          <p className="bg-red-900 w-full max-w-[200px] text-white text-center p-1 rounded-md ">{listing.type === "rent" ? " For Rent" : "For Sale"}</p>
-          {listing.offer && listing.discount && !isNaN(Number(listing.discount)) && (
-            <p className="bg-green-900 w-full max-w-[200px] text-white text-center p-1 rounded-md ">
-              Save:{Number(listing.discount).toLocaleString("en-US")}
+            <p className="flex items-center gap-2 text-sm md:text-base text-slate-600">
+              <FaMapMarkerAlt className="text-green-700" />
+              {listing.location}
             </p>
-          )}
-         </div>
 
-         {/* Description Section */}
-         {listing.description && (
-           <div className="mt-6">
-             <h2 className="text-xl font-semibold mb-3">Description</h2>
-             <p className="text-gray-700 leading-relaxed">{listing.description}</p>
-           </div>
-         )}
+            <div className="flex gap-4">
+              <p className="bg-red-900 w-full max-w-[200px] text-white text-center p-2 rounded-lg font-semibold shadow-sm">
+                {listing.type === "rent" ? "For Rent" : "For Sale"}
+              </p>
+              {listing.offer && listing.discount && !isNaN(Number(listing.discount)) && (
+                <p className="bg-green-900 w-full max-w-[200px] text-white text-center p-2 rounded-lg font-semibold shadow-sm">
+                  Save ${Number(listing.discount).toLocaleString("en-US")}
+                </p>
+              )}
+            </div>
 
-         {/* Car Specifications */}
-         <div className="mt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-           {listing.model && (
-             <div className="flex items-center gap-2">
-               <FaCar className="text-gray-600" />
-               <div>
-                 <p className="text-xs text-gray-500">Model</p>
-                 <p className="text-sm font-medium">{listing.model}</p>
-               </div>
-             </div>
-           )}
-           {listing.year && (
-             <div className="flex items-center gap-2">
-               <FaCalendarAlt className="text-gray-600" />
-               <div>
-                 <p className="text-xs text-gray-500">Year</p>
-                 <p className="text-sm font-medium">{listing.year}</p>
-               </div>
-             </div>
-           )}
-           {listing.mileage !== undefined && listing.mileage !== null && (
-             <div className="flex items-center gap-2">
-               <FaTachometerAlt className="text-gray-600" />
-               <div>
-                 <p className="text-xs text-gray-500">Mileage</p>
-                 <p className="text-sm font-medium">{listing.mileage.toLocaleString("en-US")}</p>
-               </div>
-             </div>
-           )}
-           {listing.fuelType && (
-             <div className="flex items-center gap-2">
-               <FaGasPump className="text-gray-600" />
-               <div>
-                 <p className="text-xs text-gray-500">Fuel</p>
-                 <p className="text-sm font-medium">{listing.fuelType}</p>
-               </div>
-             </div>
-           )}
-           {listing.transmission && (
-             <div className="flex items-center gap-2">
-               <FaCog className="text-gray-600" />
-               <div>
-                 <p className="text-xs text-gray-500">Transmission</p>
-                 <p className="text-sm font-medium">{listing.transmission}</p>
-               </div>
-             </div>
-           )}
-         </div>
-         {
-          currentUser && currentUser._id !== listing.salesREF && !contct &&(
-            <button onClick={()=>setcontact(true)} className="p-3 bg-slate-600 text-white uppercase rounded-lg hover:opacity-95 cursor-pointer" >Contact Owner</button>
-          )
-         }
-         {contct && <Contact listing={listing}/>}
+            {/* Description Section */}
+            {listing.description && (
+              <div className="mt-2 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                <h2 className="text-xl font-semibold mb-3 text-slate-800">Description</h2>
+                <p className="text-gray-700 leading-relaxed text-sm md:text-base">{listing.description}</p>
+              </div>
+            )}
+
+            {/* Car Specifications */}
+            <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 md:gap-6">
+              {listing.model && (
+                <div className="flex items-center gap-3 p-3 bg-white border rounded-xl shadow-sm">
+                  <FaCar className="text-slate-600 text-lg" />
+                  <div className="overflow-hidden">
+                    <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">Model</p>
+                    <p className="text-sm font-medium truncate">{listing.model}</p>
+                  </div>
+                </div>
+              )}
+              {listing.year && (
+                <div className="flex items-center gap-3 p-3 bg-white border rounded-xl shadow-sm">
+                  <FaCalendarAlt className="text-slate-600 text-lg" />
+                  <div className="overflow-hidden">
+                    <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">Year</p>
+                    <p className="text-sm font-medium truncate">{listing.year}</p>
+                  </div>
+                </div>
+              )}
+              {listing.mileage !== undefined && listing.mileage !== null && (
+                <div className="flex items-center gap-3 p-3 bg-white border rounded-xl shadow-sm">
+                  <FaTachometerAlt className="text-slate-600 text-lg" />
+                  <div className="overflow-hidden">
+                    <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">Mileage</p>
+                    <p className="text-sm font-medium truncate">{listing.mileage.toLocaleString("en-US")} km</p>
+                  </div>
+                </div>
+              )}
+              {listing.fuelType && (
+                <div className="flex items-center gap-3 p-3 bg-white border rounded-xl shadow-sm">
+                  <FaGasPump className="text-slate-600 text-lg" />
+                  <div className="overflow-hidden">
+                    <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">Fuel</p>
+                    <p className="text-sm font-medium truncate">{listing.fuelType}</p>
+                  </div>
+                </div>
+              )}
+              {listing.transmission && (
+                <div className="flex items-center gap-3 p-3 bg-white border rounded-xl shadow-sm">
+                  <FaCog className="text-slate-600 text-lg" />
+                  <div className="overflow-hidden">
+                    <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">Trans</p>
+                    <p className="text-sm font-medium truncate">{listing.transmission}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {currentUser && currentUser._id !== listing.salesREF && !contct && (
+              <button onClick={() => setcontact(true)} className="w-full bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 transition-all shadow-lg font-semibold mt-4">
+                Contact Owner
+              </button>
+            )}
+
+            {contct && (
+              <div className="bg-slate-50 p-4 rounded-xl border animate-fade-in">
+                <Contact listing={listing} />
+              </div>
+            )}
+          </div>
         </div>
-
-
-      </div>
-    }
-   <ToastContainer/>
-   </main>
-   
+      )}
+      <ToastContainer />
+    </main>
   );
 }
-
 
 export default ListingDetailPage;
